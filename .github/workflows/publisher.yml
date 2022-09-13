@@ -8,8 +8,7 @@ permissions:
   contents: read
   packages: write
   id-token: write
-env:
-  IMAGE_NAME: icedrone/docker-puppeteer
+
 jobs:
   build:
     strategy:
@@ -46,8 +45,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            name=${{ env.IMAGE_NAME }}
-            name=ghcr.io/${{ env.IMAGE_NAME }}
+            name=icedrone/docker-puppeteer
+            name=ghcr.io/icedrone/docker-puppeteer
           tags: |
             type=ref,event=tag
             type=semver,pattern={{version}}
@@ -71,4 +70,4 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ env.IMAGE_NAME }}
+          repository: icedrone/docker-puppeteer
