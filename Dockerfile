@@ -5,9 +5,7 @@ WORKDIR /app
 ENV CHROME_BIN="/usr/bin/chromium-browser" \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
 
-RUN apk update && \
-    apk upgrade && \
-    apk add chromium  \
+RUN apk add --no-cache --update chromium  \
     font-noto-cjk  \
     font-noto-emoji \
     terminus-font  \
@@ -16,4 +14,4 @@ RUN apk update && \
     ttf-font-awesome \
     ttf-inconsolata ttf-linux-libertine \
     && fc-cache -f \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/cache/apk/*

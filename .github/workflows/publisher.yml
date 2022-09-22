@@ -65,9 +65,15 @@ jobs:
           build-args: |
             NODE_VERSION=${{ matrix.version }}
 
-      - name: Update DockerHub description
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: icedrone/docker-puppeteer
+
+  docker-hub-update:
+    runs-on: ubuntu-latest
+    needs: build
+    name: Update README on Docker Hub
+    steps:
+    - name: Update DockerHub description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        repository: icedrone/docker-puppeteer
