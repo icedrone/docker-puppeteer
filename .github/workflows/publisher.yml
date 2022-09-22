@@ -71,9 +71,12 @@ jobs:
     needs: build
     name: Update README on Docker Hub
     steps:
-    - name: Update DockerHub description
-      uses: peter-evans/dockerhub-description@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-        repository: icedrone/docker-puppeteer
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Update DockerHub description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: icedrone/docker-puppeteer
