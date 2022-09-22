@@ -24,7 +24,7 @@ const browser = await puppeteer.launch(
 );
 ```
 
-## Usage
+## 💾 Usage
 ```dockerfile
 FROM icedrone/docker-puppeteer:latest
 ```
