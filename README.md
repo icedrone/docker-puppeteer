@@ -28,6 +28,13 @@ const browser = await puppeteer.launch(
 ```dockerfile
 FROM icedrone/docker-puppeteer:latest
 ```
+
+## ⚡️ Quick start example
+```dockerfile
+FROM icedrone/docker-puppeteer:latest
+COPY . .
+CMD ["node", "index.js"]
+```
 ## 👨‍💻 Contributing
 If you ❤️ the project fill free to help and contribute.
 Pull-requests are welcome. 
