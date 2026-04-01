@@ -2,16 +2,6 @@ package:
   chromium:
     installed: true
 
-user:
-  pptruser:
-    exists: true
-    groups:
-      - pptruser
-
-group:
-  pptruser:
-    exists: true
-
 command:
   node -e "console.log('node works')":
     exit-status: 0
@@ -24,8 +14,6 @@ file:
   /usr/bin/chromium-browser:
     exists: true
     filetype: file
-    mode: "0755"
   /app:
     exists: true
     filetype: directory
-    owner: pptruser
