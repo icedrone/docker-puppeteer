@@ -15,12 +15,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [18-alpine, 20-alpine, 22-alpine]
+        version: [20-alpine, 22-alpine, 24-alpine]
     runs-on: ubuntu-latest
     name: Test (node:${{ matrix.version }}, amd64)
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -74,12 +74,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [18-alpine, 20-alpine, 22-alpine]
+        version: [20-alpine, 22-alpine, 24-alpine]
     runs-on: ubuntu-latest
     name: Test (node:${{ matrix.version }}, arm64)
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
