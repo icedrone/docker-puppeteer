@@ -13,11 +13,17 @@ This project is a lightweight Puppeteer/Chromium docker image ready to launch ou
 docker pull icedrone/docker-puppeteer:latest
 ```
 
-## 🛑 Configuration
-Change `executablePath` value to the chromium-browser location.
+## 🔧 Configuration
+Install `puppeteer-core` (not `puppeteer`) since the image ships with system Chromium:
+
+```shell
+npm install puppeteer-core
+```
 
 Example:
 ```js
+const puppeteer = require('puppeteer-core');
+
 const browser = await puppeteer.launch(
     {
         executablePath: '/usr/bin/chromium-browser',
@@ -25,6 +31,33 @@ const browser = await puppeteer.launch(
     }
 );
 ```
+
+> **Note:** `--no-sandbox` is required because Chromium's sandbox needs kernel capabilities not available in most containers. The container already runs as a non-root user (`pptruser`) which limits the blast radius. Avoid processing untrusted HTML/URLs without additional isolation.
+>
+> `--disable-dev-shm-usage` is recommended to prevent Chromium crashes caused by Docker's default 64MB `/dev/shm` limit.
+
+### Pre-configured environment variables
+The following are already set in the image — no need to configure them manually:
+
+| Variable | Value |
+|----------|-------|
+| `CHROME_BIN` | `/usr/bin/chromium-browser` |
+| `PUPPETEER_EXECUTABLE_PATH` | `/usr/bin/chromium-browser` |
+| `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` | `true` |
+| `PUPPETEER_SKIP_DOWNLOAD` | `true` |
+
+### Included fonts
+Noto Sans CJK, Noto Color Emoji, DejaVu, FreeFonts, Inconsolata, Linux Libertine — supporting CJK characters, emoji, and Latin scripts out of the box.
+
+### Container details
+- Runs as non-root user `pptruser` (UID 1001)
+- Working directory: `/app`
+- Uses `tini` as PID 1 for proper signal handling
+- Available on both **Docker Hub** and **GitHub Container Registry**:
+  ```shell
+  docker pull icedrone/docker-puppeteer:latest
+  docker pull ghcr.io/icedrone/docker-puppeteer:latest
+  ```
 
 ## 💾 Usage
 ```dockerfile

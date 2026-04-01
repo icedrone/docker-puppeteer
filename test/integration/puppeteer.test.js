@@ -1,7 +1,6 @@
 import { describe, it, beforeAll, afterAll } from 'vitest';
 import { expect } from 'vitest';
 import puppeteer from 'puppeteer-core';
-import fs from 'node:fs';
 
 const LAUNCH_OPTIONS = {
   executablePath: process.env.CHROME_BIN || '/usr/bin/chromium-browser',
