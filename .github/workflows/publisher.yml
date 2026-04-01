@@ -10,11 +10,54 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    strategy:
+      fail-fast: true
+      matrix:
+        version: [ 20-alpine, 22-alpine, 24-alpine ]
+    runs-on: ubuntu-latest
+    name: Pre-publish test (node:${{ matrix.version }})
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          platforms: linux/amd64
+          build-args: |
+            NODE_VERSION=${{ matrix.version }}
+          tags: docker-puppeteer:test
+          load: true
+          cache-from: type=gha,scope=build-${{ matrix.version }}
+
+      - name: Install container-structure-test
+        run: |
+          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/download/v1.22.1/container-structure-test-linux-amd64
+          chmod +x container-structure-test-linux-amd64
+          sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+
+      - name: Run structure tests
+        run: |
+          container-structure-test test \
+            --image docker-puppeteer:test \
+            --config test/structure-test.yaml
+
+      - name: Smoke test - Chromium launches
+        run: |
+          docker run --rm docker-puppeteer:test \
+            chromium-browser --headless --no-sandbox --disable-gpu --dump-dom about:blank
+
   build:
+    needs: test
     strategy:
       fail-fast: false
       matrix:
-        version: [ 18-alpine, 20-alpine, 22-alpine ]
+        version: [ 20-alpine, 22-alpine, 24-alpine ]
     runs-on: ubuntu-latest
     name: Build and Push
     permissions:
@@ -59,6 +102,7 @@ jobs:
             type=sha,suffix=-${{ matrix.version }}
             type=raw,value=latest-${{ matrix.version }},enable=true
             type=raw,value=${{ matrix.version }},enable=true
+            type=raw,value=latest,enable=${{ matrix.version == '22-alpine' }}
 
       - name: Build and push
         uses: docker/build-push-action@v7

@@ -2,10 +2,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Known Vulnerabilities](https://snyk.io/test/github/icedrone/docker-puppeteer/badge.svg)](https://snyk.io/test/github/icedrone/docker-puppeteer)
 
-### A ready to use "Google Puppeteer" docker image
-This project is a light weight Google-Puppeteer docker image ready to launch out of the box.
-> Supports alpine base image versions 18, 20 and 22.
-> Additional versions are coming soon.
+### A ready to use Puppeteer docker image
+This project is a lightweight Puppeteer/Chromium docker image ready to launch out of the box.
+> Supports Node.js 20, 22, and 24 on Alpine Linux.
 
 > **Architectures:** `amd64` and `arm64`.
 
@@ -22,7 +21,7 @@ Example:
 const browser = await puppeteer.launch(
     {
         executablePath: '/usr/bin/chromium-browser',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     }
 );
 ```
@@ -39,11 +38,16 @@ COPY . .
 CMD ["node", "index.js"]
 ```
 ## 🏷️ Available Tags
-- `latest` - the most recent stable build
-- `1.0.0` - specific semver release
-- `1.0` - latest patch for a given major.minor
-- `1` - latest minor and patch for a given major
-- SHA-based tags (e.g. `sha-a1b2c3d`) - built from a specific commit
+All tags include a Node version suffix. For example, with Node 22 on Alpine:
+- `latest` — default image (currently Node 22 Alpine)
+- `22-alpine` — latest build for a specific Node version
+- `latest-22-alpine` — same as above, explicit form
+- `1.0.0-22-alpine` — specific semver release
+- `1.0-22-alpine` — latest patch for a given major.minor
+- `1-22-alpine` — latest minor and patch for a given major
+- `sha-a1b2c3d-22-alpine` — built from a specific commit
+
+Replace `22-alpine` with `20-alpine` or `24-alpine` for other Node versions.
 
 ## 👨‍💻 Contributing
 If you ❤️ the project feel free to help and contribute.
