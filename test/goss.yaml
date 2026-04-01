@@ -2,6 +2,16 @@ package:
   chromium:
     installed: true
 
+user:
+  pptruser:
+    exists: true
+    groups:
+      - pptruser
+
+group:
+  pptruser:
+    exists: true
+
 command:
   node -e "console.log('node works')":
     exit-status: 0
@@ -16,3 +26,4 @@ file:
   /app:
     exists: true
     filetype: directory
+    owner: pptruser
