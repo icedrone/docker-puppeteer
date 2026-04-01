@@ -6,28 +6,42 @@ on:
   push:
     branches: [master, develop]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  test-amd64:
     strategy:
+      fail-fast: false
       matrix:
         version: [18-alpine, 20-alpine, 22-alpine]
     runs-on: ubuntu-latest
-    name: Test (node:${{ matrix.version }})
+    name: Test (node:${{ matrix.version }}, amd64)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install container-structure-test
-        run: |
-          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64
-          chmod +x container-structure-test-linux-amd64
-          sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          build-args: |
+            NODE_VERSION=${{ matrix.version }}
+          tags: docker-puppeteer:test
+          load: true
+          cache-from: type=gha,scope=test-${{ matrix.version }}-amd64
+          cache-to: type=gha,mode=max,scope=test-${{ matrix.version }}-amd64
+
+      - name: Install container-structure-test
         run: |
-          docker build \
-            --build-arg NODE_VERSION=${{ matrix.version }} \
-            -t docker-puppeteer:test .
+          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/download/v1.22.1/container-structure-test-linux-amd64
+          chmod +x container-structure-test-linux-amd64
+          sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
       - name: Run structure tests
         run: |
@@ -44,10 +58,61 @@ jobs:
 
       - name: Install goss and dgoss
         run: |
-          curl -fsSL https://goss.rocks/install | sudo sh
+          GOSS_VER=v0.4.9
+          sudo curl -fsSL -o /usr/local/bin/goss "https://github.com/goss-org/goss/releases/download/${GOSS_VER}/goss-linux-amd64"
+          sudo chmod +x /usr/local/bin/goss
+          sudo curl -fsSL -o /usr/local/bin/dgoss "https://raw.githubusercontent.com/goss-org/goss/${GOSS_VER}/extras/dgoss/dgoss"
+          sudo chmod +x /usr/local/bin/dgoss
 
       - name: Run dgoss tests
         env:
           GOSS_FILE: test/goss.yaml
         run: |
           dgoss run docker-puppeteer:test sleep infinity
+
+  test-arm64:
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [18-alpine, 20-alpine, 22-alpine]
+    runs-on: ubuntu-latest
+    name: Test (node:${{ matrix.version }}, arm64)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/arm64
+          build-args: |
+            NODE_VERSION=${{ matrix.version }}
+          tags: docker-puppeteer:test
+          load: true
+          cache-from: type=gha,scope=test-${{ matrix.version }}-arm64
+          cache-to: type=gha,mode=max,scope=test-${{ matrix.version }}-arm64
+
+      - name: Install goss and dgoss
+        run: |
+          GOSS_VER=v0.4.9
+          sudo curl -fsSL -o /usr/local/bin/goss "https://github.com/goss-org/goss/releases/download/${GOSS_VER}/goss-linux-amd64"
+          sudo chmod +x /usr/local/bin/goss
+          sudo curl -fsSL -o /usr/local/bin/dgoss "https://raw.githubusercontent.com/goss-org/goss/${GOSS_VER}/extras/dgoss/dgoss"
+          sudo chmod +x /usr/local/bin/dgoss
+
+      - name: Run dgoss tests
+        env:
+          GOSS_FILE: test/goss-arm64.yaml
+        run: |
+          dgoss run --platform linux/arm64 docker-puppeteer:test sleep infinity
+
+      - name: Verify Chromium installed
+        run: |
+          docker run --rm --platform linux/arm64 docker-puppeteer:test which chromium-browser
