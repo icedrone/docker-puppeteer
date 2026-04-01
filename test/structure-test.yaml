@@ -57,6 +57,14 @@ commandTests:
     command: "fc-list"
     expectedOutput: ["FreeMono"]
 
+  - name: "Font installed: Inconsolata"
+    command: "fc-list"
+    expectedOutput: ["Inconsolata"]
+
+  - name: "Font installed: Linux Libertine"
+    command: "fc-list"
+    expectedOutput: ["Linux Libertine"]
+
   - name: "Base OS is Alpine"
     command: "cat"
     args: ["/etc/os-release"]

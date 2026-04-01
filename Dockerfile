@@ -14,7 +14,8 @@ ENV CHROME_BIN="/usr/bin/chromium-browser" \
     PUPPETEER_SKIP_DOWNLOAD="true" \
     PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
 
-RUN apk add --no-cache \
+RUN apk upgrade --no-cache && \
+    apk add --no-cache \
     chromium \
     tini \
     font-noto-cjk \
@@ -23,9 +24,12 @@ RUN apk add --no-cache \
     ttf-freefont \
     ttf-inconsolata \
     ttf-linux-libertine \
-    && fc-cache -f
+    && fc-cache -f \
+    && npm install -g npm@10 \
+    && npm install -g npm@11 \
+    && npm cache clean --force
 
-RUN addgroup -S pptruser && adduser -S -G pptruser pptruser \
+RUN addgroup -S -g 1001 pptruser && adduser -S -G pptruser -u 1001 pptruser \
     && chown -R pptruser:pptruser /app
 
 USER pptruser

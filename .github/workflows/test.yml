@@ -40,6 +40,7 @@ jobs:
       - name: Install container-structure-test
         run: |
           curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/download/v1.22.1/container-structure-test-linux-amd64
+          echo "fa35e89512a8978585f76cf41397956d2e3a30c62c2ad3fb857b1597074d14ca  container-structure-test-linux-amd64" | sha256sum --check
           chmod +x container-structure-test-linux-amd64
           sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
 
@@ -60,8 +61,10 @@ jobs:
         run: |
           GOSS_VER=v0.4.9
           sudo curl -fsSL -o /usr/local/bin/goss "https://github.com/goss-org/goss/releases/download/${GOSS_VER}/goss-linux-amd64"
+          echo "87dd36cfa1b8b50554e6e2ca29168272e26755b19ba5438341f7c66b36decc19  /usr/local/bin/goss" | sha256sum --check
           sudo chmod +x /usr/local/bin/goss
           sudo curl -fsSL -o /usr/local/bin/dgoss "https://raw.githubusercontent.com/goss-org/goss/${GOSS_VER}/extras/dgoss/dgoss"
+          echo "7ee35d6ccbe1440eb2a08984a43e8b3742f2e849abdc0d7384ac08de55682d7c  /usr/local/bin/dgoss" | sha256sum --check
           sudo chmod +x /usr/local/bin/dgoss
 
       - name: Run dgoss tests
@@ -69,6 +72,16 @@ jobs:
           GOSS_FILE: test/goss.yaml
         run: |
           dgoss run docker-puppeteer:test sleep infinity
+
+      - name: Scan image for vulnerabilities
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: docker-puppeteer:test
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+          scanners: vuln
+          trivyignores: .trivyignore
 
   test-arm64:
     strategy:
@@ -103,8 +116,10 @@ jobs:
         run: |
           GOSS_VER=v0.4.9
           sudo curl -fsSL -o /usr/local/bin/goss "https://github.com/goss-org/goss/releases/download/${GOSS_VER}/goss-linux-amd64"
+          echo "87dd36cfa1b8b50554e6e2ca29168272e26755b19ba5438341f7c66b36decc19  /usr/local/bin/goss" | sha256sum --check
           sudo chmod +x /usr/local/bin/goss
           sudo curl -fsSL -o /usr/local/bin/dgoss "https://raw.githubusercontent.com/goss-org/goss/${GOSS_VER}/extras/dgoss/dgoss"
+          echo "7ee35d6ccbe1440eb2a08984a43e8b3742f2e849abdc0d7384ac08de55682d7c  /usr/local/bin/dgoss" | sha256sum --check
           sudo chmod +x /usr/local/bin/dgoss
 
       - name: Run dgoss tests
