@@ -1,0 +1,18 @@
+package:
+  chromium:
+    installed: true
+
+command:
+  node -e "console.log('node works')":
+    exit-status: 0
+    stdout:
+      - node works
+  chromium-browser --headless --no-sandbox --disable-gpu --dump-dom about:blank:
+    exit-status: 0
+
+file:
+  /usr/bin/chromium-browser:
+    exists: true
+  /app:
+    exists: true
+    filetype: directory

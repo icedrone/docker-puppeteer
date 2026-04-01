@@ -1,0 +1,52 @@
+schemaVersion: "2.0.0"
+
+metadataTest:
+  workdir: "/app"
+  envVars:
+    - key: CHROME_BIN
+      value: "/usr/bin/chromium-browser"
+    - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+      value: "true"
+
+fileExistenceTests:
+  - name: "Chromium binary exists and is executable"
+    path: "/usr/bin/chromium-browser"
+    shouldExist: true
+    isExecutableBy: "any"
+
+commandTests:
+  - name: "chromium-browser --version outputs Chromium"
+    command: "chromium-browser"
+    args: ["--version"]
+    expectedOutput: ["Chromium"]
+
+  - name: "node --version outputs version starting with v"
+    command: "node"
+    args: ["--version"]
+    expectedOutput: ["^v\\d+"]
+
+  - name: "npm --version outputs a version number"
+    command: "npm"
+    args: ["--version"]
+    expectedOutput: ["^\\d+"]
+
+  - name: "Font installed: Noto Sans CJK"
+    command: "fc-list"
+    expectedOutput: ["Noto Sans CJK"]
+
+  - name: "Font installed: Noto Color Emoji"
+    command: "fc-list"
+    expectedOutput: ["Noto Color Emoji"]
+
+  - name: "Font installed: DejaVu"
+    command: "fc-list"
+    expectedOutput: ["DejaVu"]
+
+  - name: "Font installed: FreeMono"
+    command: "fc-list"
+    expectedOutput: ["FreeMono"]
+
+  - name: "Base OS is Alpine"
+    command: "cat"
+    args: ["/etc/os-release"]
+    expectedOutput: ["alpine"]
