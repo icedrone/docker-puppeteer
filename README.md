@@ -38,16 +38,20 @@ COPY . .
 CMD ["node", "index.js"]
 ```
 ## 🏷️ Available Tags
-All tags include a Node version suffix. For example, with Node 22 on Alpine:
+All tags include a Node version suffix. Short aliases without `-alpine` are also available since Alpine is the default.
+
+Bare semver tags (e.g. `1.0.0`) always point to the default Node version (currently 22 Alpine).
+
 - `latest` — default image (currently Node 22 Alpine)
-- `22-alpine` — latest build for a specific Node version
-- `latest-22-alpine` — same as above, explicit form
-- `1.0.0-22-alpine` — specific semver release
-- `1.0-22-alpine` — latest patch for a given major.minor
-- `1-22-alpine` — latest minor and patch for a given major
+- `1.0.0` — specific semver release (default Node version)
+- `1.0` — latest patch for a given major.minor
+- `1` — latest minor and patch for a given major
+- `22` or `22-alpine` — latest build for Node 22
+- `latest-22` or `latest-22-alpine` — same as above, explicit form
+- `1.0.0-22-alpine` — specific semver release pinned to a Node version
 - `sha-a1b2c3d-22-alpine` — built from a specific commit
 
-Replace `22-alpine` with `20-alpine` or `24-alpine` for other Node versions.
+Replace `22` with `20` or `24` for other Node versions.
 
 ## 👨‍💻 Contributing
 If you ❤️ the project feel free to help and contribute.
