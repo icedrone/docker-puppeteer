@@ -11,13 +11,21 @@ jobs:
     strategy:
       matrix:
         version: [18-alpine, 20-alpine, 22-alpine]
+        platform: [linux/amd64, linux/arm64]
     runs-on: ubuntu-latest
-    name: Test (node:${{ matrix.version }})
+    name: Test (node:${{ matrix.version }}, ${{ matrix.platform }})
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Install container-structure-test
+        if: matrix.platform == 'linux/amd64'
         run: |
           curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64
           chmod +x container-structure-test-linux-amd64
@@ -25,17 +33,21 @@ jobs:
 
       - name: Build image
         run: |
-          docker build \
+          docker buildx build \
+            --platform ${{ matrix.platform }} \
             --build-arg NODE_VERSION=${{ matrix.version }} \
-            -t docker-puppeteer:test .
+            -t docker-puppeteer:test \
+            --load .
 
       - name: Run structure tests
+        if: matrix.platform == 'linux/amd64'
         run: |
           container-structure-test test \
             --image docker-puppeteer:test \
             --config test/structure-test.yaml
 
       - name: Run integration tests
+        if: matrix.platform == 'linux/amd64'
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/test/integration:/tests:ro \
@@ -51,3 +63,7 @@ jobs:
           GOSS_FILE: test/goss.yaml
         run: |
           dgoss run docker-puppeteer:test sleep infinity
+
+      - name: Verify Chromium runs
+        run: |
+          docker run --rm docker-puppeteer:test chromium-browser --version
