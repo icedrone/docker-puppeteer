@@ -38,10 +38,9 @@ jobs:
       - name: Run integration tests
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}/test/integration:/tests \
-            -w /tests \
+            -v ${{ github.workspace }}/test/integration:/tests:ro \
             docker-puppeteer:test \
-            sh -c "npm ci && npx vitest run"
+            sh -c "cp -r /tests /tmp/tests && cd /tmp/tests && npm install && npx vitest run"
 
       - name: Install goss and dgoss
         run: |
