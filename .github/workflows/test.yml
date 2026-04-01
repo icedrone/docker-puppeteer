@@ -71,7 +71,6 @@ jobs:
           dgoss run docker-puppeteer:test sleep infinity
 
   test-arm64:
-    if: github.event_name == 'push'
     strategy:
       fail-fast: false
       matrix:
