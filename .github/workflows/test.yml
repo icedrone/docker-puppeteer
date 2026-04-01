@@ -1,0 +1,54 @@
+name: Test Docker Image
+
+on:
+  pull_request:
+    branches: [master, develop]
+  push:
+    branches: [master, develop]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        version: [18-alpine, 20-alpine, 22-alpine]
+    runs-on: ubuntu-latest
+    name: Test (node:${{ matrix.version }})
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install container-structure-test
+        run: |
+          curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64
+          chmod +x container-structure-test-linux-amd64
+          sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+
+      - name: Build image
+        run: |
+          docker build \
+            --build-arg NODE_VERSION=${{ matrix.version }} \
+            -t docker-puppeteer:test .
+
+      - name: Run structure tests
+        run: |
+          container-structure-test test \
+            --image docker-puppeteer:test \
+            --config test/structure-test.yaml
+
+      - name: Run integration tests
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/test/integration:/tests \
+            -w /tests \
+            docker-puppeteer:test \
+            sh -c "npm ci && npx vitest run"
+
+      - name: Install goss and dgoss
+        run: |
+          curl -fsSL https://goss.rocks/install | sudo sh
+
+      - name: Run dgoss tests
+        env:
+          GOSS_FILE: test/goss.yaml
+        run: |
+          dgoss run docker-puppeteer:test sleep infinity
