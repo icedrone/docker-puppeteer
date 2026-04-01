@@ -13,7 +13,6 @@ command:
 file:
   /usr/bin/chromium-browser:
     exists: true
-    filetype: file
   /app:
     exists: true
     filetype: directory
