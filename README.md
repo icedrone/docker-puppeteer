@@ -67,9 +67,14 @@ FROM icedrone/docker-puppeteer:latest
 ## ⚡️ Quick start example
 ```dockerfile
 FROM icedrone/docker-puppeteer:latest
-COPY . .
+COPY --chown=pptruser:pptruser . .
+RUN npm ci
 CMD ["node", "index.js"]
 ```
+
+> **Note:** Always use `--chown=pptruser:pptruser` with `COPY` and `ADD` instructions.
+> The image runs as non-root user `pptruser`, so files copied without `--chown` will be
+> owned by root and may not be readable or writable by the application.
 ## 🏷️ Available Tags
 All tags include a Node version suffix. Short aliases without `-alpine` are also available since Alpine is the default.
 
