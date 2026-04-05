@@ -1,5 +1,4 @@
-import { describe, it, beforeAll, afterAll } from 'vitest';
-import { expect } from 'vitest';
+import { describe, it, beforeAll, afterAll, expect } from 'vitest';
 import puppeteer from 'puppeteer-core';
 
 const LAUNCH_OPTIONS = {
@@ -82,6 +81,30 @@ describe('PDF generation (core use case)', () => {
     const pdf = await page.pdf({ format: 'A4' });
 
     expect(pdf.length).toBeGreaterThan(0);
+    await page.close();
+  });
+});
+
+describe('Timeout handling', () => {
+  it('rejects when waitForSelector exceeds timeout', async () => {
+    const page = await browser.newPage();
+    await page.setContent('<h1>Hello</h1>');
+
+    await expect(
+      page.waitForSelector('#nonexistent', { timeout: 500 }),
+    ).rejects.toThrow();
+
+    await page.close();
+  });
+
+  it('rejects when waitForFunction exceeds timeout', async () => {
+    const page = await browser.newPage();
+    await page.setContent('<h1>Hello</h1>');
+
+    await expect(
+      page.waitForFunction(() => document.querySelector('#never-added'), { timeout: 500 }),
+    ).rejects.toThrow();
+
     await page.close();
   });
 });
