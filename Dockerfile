@@ -1,11 +1,14 @@
 ARG NODE_VERSION="lts-alpine"
 FROM node:${NODE_VERSION}
 
+ARG VERSION="dev"
+
 LABEL org.opencontainers.image.title="docker-puppeteer" \
       org.opencontainers.image.description="Lightweight Puppeteer/Chromium Docker image on Alpine" \
       org.opencontainers.image.url="https://github.com/icedrone/docker-puppeteer" \
       org.opencontainers.image.source="https://github.com/icedrone/docker-puppeteer" \
-      org.opencontainers.image.licenses="MIT"
+      org.opencontainers.image.licenses="MIT" \
+      org.opencontainers.image.version="${VERSION}"
 
 WORKDIR /app
 
