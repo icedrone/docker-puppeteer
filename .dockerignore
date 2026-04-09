@@ -5,4 +5,12 @@
 .DS_Store
 README.md
 LICENSE
+SECURITY.md
 test/
+node_modules/
+.editorconfig
+.hadolint.yaml
+.trivyignore
+.release-please-manifest.json
+release-please-config.json
+commitlint.config.js
