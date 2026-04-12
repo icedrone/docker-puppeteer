@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/icedrone/docker-puppeteer/compare/v3.0.0...v3.0.1) (2026-04-12)
+
+
+### Bug Fixes
+
+* use GitHub App token in release-please to trigger publisher work flow ([#22](https://github.com/icedrone/docker-puppeteer/issues/22)) ([cfbcdf9](https://github.com/icedrone/docker-puppeteer/commit/cfbcdf984b67bcb43328d6c4f99a8dc4921c7fd7))
+
 ## [3.0.0](https://github.com/icedrone/docker-puppeteer/compare/v2.0.0...v3.0.0) (2026-04-09)
 
 
