@@ -1,3 +1,8 @@
 # picomatch 4.0.3 bundled inside npm's tinyglobby — transitive dep we cannot control
 # Remove once npm ships tinyglobby with picomatch >= 4.0.4
 CVE-2026-33671
+
+# Alpine base image CVEs — fixed versions not yet available in base image
+# Remove once Alpine ships openssl >= 3.5.6 and libssh >= 0.11.4
+CVE-2026-28390
+CVE-2026-0968
