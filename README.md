@@ -91,9 +91,28 @@ Bare semver tags (e.g. `1.0.0`) always point to the default Node version (curren
 
 Replace `22` with `20` or `24` for other Node versions.
 
+## 🧪 Testing
+The project uses a multi-layer test strategy. All tests run inside the built Docker image.
+
+```shell
+# Build the image locally
+docker build -t docker-puppeteer:local .
+
+# Container structure tests (metadata, binaries, fonts)
+container-structure-test test --image docker-puppeteer:local --config test/structure-test.yaml
+
+# Runtime validation with dgoss
+dgoss run docker-puppeteer:local
+
+# Integration tests (Puppeteer rendering, PDF, screenshots)
+docker run --rm -v "$(pwd)/test/integration:/app" -w /app docker-puppeteer:local sh -c "npm ci && npm test"
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full setup instructions.
+
 ## 👨‍💻 Contributing
 If you ❤️ the project feel free to help and contribute.
-Pull-requests are welcome. 
+Pull-requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 💫 License
 MIT © [License](LICENSE)
