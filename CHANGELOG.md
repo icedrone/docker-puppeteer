@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/icedrone/docker-puppeteer/compare/v3.0.1...v3.0.2) (2026-04-18)
+
+
+### Miscellaneous
+
+* update Dockerfile, CI workflows, docs, and upgrade test dependencies ([#27](https://github.com/icedrone/docker-puppeteer/issues/27)) ([3d12559](https://github.com/icedrone/docker-puppeteer/commit/3d12559fa484c5031288dbc62937c12ed267c6a1))
+
 ## [3.0.1](https://github.com/icedrone/docker-puppeteer/compare/v3.0.0...v3.0.1) (2026-04-12)
 
 
