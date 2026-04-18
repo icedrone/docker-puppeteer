@@ -17,6 +17,8 @@ command:
     exit-status: 0
     stdout:
       - node works
+  chromium-browser --headless --no-sandbox --disable-gpu --dump-dom about:blank:
+    exit-status: 0
 
 file:
   /usr/bin/chromium-browser:

@@ -17,6 +17,9 @@ ENV CHROME_BIN="/usr/bin/chromium-browser" \
     PUPPETEER_SKIP_DOWNLOAD="true" \
     PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium-browser"
 
+# Chromium is intentionally unpinned: Alpine repos only carry a single version
+# per release branch, so pinning would break builds when Alpine rotates packages.
+# The image is rebuilt on every release to pick up the latest security patches.
 RUN apk upgrade --no-cache && \
     apk add --no-cache \
     chromium \

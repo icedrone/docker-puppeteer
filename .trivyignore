@@ -1,3 +1,7 @@
+# === Review these suppressions quarterly or when upgrading base image ===
+# Last reviewed: 2026-04-12
+# Next review:   2026-07-12
+
 # picomatch 4.0.3 bundled inside npm's tinyglobby — transitive dep we cannot control
 # Remove once npm ships tinyglobby with picomatch >= 4.0.4
 CVE-2026-33671
